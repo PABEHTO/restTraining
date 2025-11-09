@@ -25,8 +25,7 @@ services:
       - pgadmin:/var/lib/pgadmin
 
   app:
-#    image: "sha256:64d32bda33f742a235a3ba1ab3b826116c8a43761efa9460727d1c3eb9c3001e"
-    image: "sha256:035348bdb2b30b08973148e75ab3c2a9e24a3bf281d826c572e7583a187467f7"
+    image: "sha256:d8b523da8448f9154dc87648734ab9b9b1a6b46662742f2c4abcd7377151c12a"
     container_name: app
     ports:
       - "8080:8080"
@@ -38,6 +37,7 @@ services:
       - DB_URL=jdbc:postgresql://postgres:5432/myDataBase
     depends_on:
       - pgadmin
+      - mongo
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -60,6 +60,18 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+  mongo:
+    image: mongo:6.0.4
+    container_name: mongoRest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: myMongoDB
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongo_data:/data/db
 
 #  kafka:
 #    image: confluentinc/cp-kafka:latest
@@ -86,3 +98,4 @@ services:
 volumes:
   postgres:
   pgadmin:
+  mongo_data:
