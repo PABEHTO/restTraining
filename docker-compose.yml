@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgresRest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: myDataBase
+    volumes:
+      - postgres:/var/lib/postgres/data
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadminRest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8000:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+
+  app:
+    image: "sha256:64d32bda33f742a235a3ba1ab3b826116c8a43761efa9460727d1c3eb9c3001e"
+    container_name: app
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=root
+      - DB_URL=jdbc:postgresql://postgres:5432/myDataBase
+    depends_on:
+      - pgadmin
+
+volumes:
+  postgres:
+  pgadmin:
